@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core Value Diagnosis · PwC</title>
+<style>
+  :root {
+    --orange: #E85D04;
+    --orange-dark: #C14800;
+    --orange-light: #FFF4EC;
+    --orange-border: #FFCBA0;
+    --text-primary: #1A1A1A;
+    --text-secondary: #5F5E5A;
+    --text-muted: #888780;
+    --bg: #F7F5F2;
+    --white: #FFFFFF;
+    --border: #D3D1C7;
+    --border-light: #E8E6E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+  }
+
+  /* 전체 화면을 세로 중앙 정렬 */
+  .page-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  /* 카드 컨테이너 — 넓고 여유롭게 */
+  .container {
+    width: 100%;
+    max-width: 560px;
+    background: var(--white);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 40px 44px;
+  }
+
+  .screen { animation: fadeUp 0.28s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .app-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--orange);
+    letter-spacing: 0.06em;
+  }
+
+  /* Typography */
+  .hero-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 24px;
+  }
+  h2 {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+  p.body-text {
+    font-size: 14.5px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+
+  /* Lock card */
+  .lock-card {
+    background: var(--orange-light);
+    border: 1px solid var(--orange-border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .lock-card-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .lock-card p { font-size: 13.5px; color: var(--orange-dark); line-height: 1.65; margin: 0; }
+  .lock-card strong { font-weight: 600; display: block; margin-bottom: 3px; font-size: 12.5px; }
+
+  /* Principle cards */
+  .principle {
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 13px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .pnum {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--orange-light);
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ptext { font-size: 14px; color: var(--text-primary); line-height: 1.55; }
+
+  /* Checkbox */
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    margin: 20px 0;
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--white);
+    user-select: none;
+  }
+  .checkbox-wrapper.checked { border-color: var(--orange); background: var(--orange-light); }
+  .custom-check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .checkbox-wrapper.checked .custom-check { background: var(--orange); border-color: var(--orange); }
+  .check-icon { display: none; }
+  .checkbox-wrapper.checked .check-icon { display: block; }
+  .checkbox-label { font-size: 14.5px; color: var(--text-primary); }
+
+  /* Buttons */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 15.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .btn-primary { background: var(--orange); color: white; }
+  .btn-primary:hover { background: var(--orange-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
+  .btn-secondary {
+    background: var(--white);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    margin-top: 10px;
+  }
+  .btn-secondary:hover { background: var(--bg); }
+  .hint-text { text-align: center; font-size: 12.5px; color: var(--text-muted); margin-top: 12px; }
+
+  /* Progress */
+  .progress-wrap { margin-bottom: 24px; }
+  .progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .progress-label { font-size: 13px; font-weight: 600; color: var(--orange); }
+  .progress-pct { font-size: 12px; color: var(--text-muted); }
+  .progress-track { height: 5px; background: var(--border-light); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--orange); border-radius: 99px; transition: width 0.4s ease; }
+
+  /* Question */
+  .q-badge {
+    display: inline-block;
+    background: var(--orange-light);
+    color: var(--orange);
+    border: 1px solid var(--orange-border);
+    border-radius: 99px;
+    padding: 3px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .q-text {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--white);
+  }
+  .option:hover { border-color: var(--orange-border); background: #FFFAF7; }
+  .option.selected { border-color: var(--orange); background: var(--orange-light); }
+  .opt-label {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.18s;
+  }
+  .option.selected .opt-label { background: var(--orange); border-color: var(--orange); color: white; }
+  .opt-text { font-size: 14.5px; color: var(--text-primary); line-height: 1.55; padding-top: 4px; }
+
+  /* Confirm table */
+  .confirm-table {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .confirm-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .confirm-row:last-child { border-bottom: none; }
+  .confirm-key { font-size: 13.5px; color: var(--text-muted); }
+  .confirm-val { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+  .confirm-val.private { color: var(--orange-dark); }
+
+  /* Complete */
+  .complete-center { text-align: center; }
+  .complete-emoji {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--orange-light);
+    border: 2px solid var(--orange-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 34px;
+    margin: 0 auto 18px;
+  }
+  .complete-title { font-size: 26px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
+  .complete-sub { font-size: 14.5px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 24px; }
+  .private-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--orange-light);
+    border: 1.5px solid var(--orange);
+    border-radius: 12px;
+    padding: 13px 16px;
+    margin-bottom: 20px;
+  }
+  .private-banner span { font-size: 13.5px; color: var(--orange-dark); line-height: 1.5; }
+
+  /* Mission flow */
+  .flow-wrap { margin-top: 24px; }
+  .flow-label { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 14px; }
+  .flow-item { display: flex; align-items: flex-start; gap: 12px; }
+  .flow-col { display: flex; flex-direction: column; align-items: center; }
+  .flow-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--orange); flex-shrink: 0; margin-top: 3px; }
+  .flow-dot.gray { background: var(--border); }
+  .flow-line { width: 1.5px; height: 22px; background: var(--border-light); }
+  .flow-name { font-size: 14px; color: var(--text-primary); padding-bottom: 22px; }
+  .flow-name.active { font-weight: 700; color: var(--orange); }
+  .flow-name.muted { color: var(--text-muted); }
+  .flow-item:last-child .flow-name { padding-bottom: 0; }
+
+  /* Back button */
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    padding: 0;
+    margin-bottom: 24px;
+  }
+  .back-btn:hover { color: var(--text-primary); }
+
+  @media (max-width: 600px) {
+    .container { padding: 28px 24px; border-radius: 0; border-left: none; border-right: none; }
+    .page-wrap { padding: 0; align-items: flex-start; }
+    .hero-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="container" id="app"></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    id: 1,
+    text: "첫 팀 프로젝트에서 팀원들의 의견이 갈리고 있습니다. 당신이 가장 먼저 할 행동은?",
+    options: [
+      { label: "A", text: "판단 기준과 사실관계를 먼저 정리한다.", value: "Act with Integrity" },
+      { label: "B", text: "모두가 편하게 의견을 낼 수 있도록 분위기를 만든다.", value: "Work Together" },
+      { label: "C", text: "의견이 묻힌 팀원이 없는지 먼저 살핀다.", value: "Care" },
+      { label: "D", text: "기존 방식이 아닌 새로운 해결 방법을 제안한다.", value: "Reimagine the Possible" },
+      { label: "E", text: "이 선택이 고객과 팀에 어떤 변화를 만들지 생각한다.", value: "Make a Difference" }
+    ]
+  },
+  {
+    id: 2,
+    text: "AI가 그럴듯한 답변을 만들어줬지만 출처가 불분명합니다. 당신은 어떻게 하겠습니까?",
+    options: [
+      { label: "A", text: "원문 자료와 공식 출처를 확인한 뒤 사용한다.", value: "Act with Integrity" },
+      { label: "B", text: "팀원들과 함께 답변의 타당성을 검토한다.", value: "Work Together" },
+      { label: "C", text: "AI 답변을 더 나은 방향으로 개선할 질문을 다시 설계한다.", value: "Reimagine the Possible" },
+      { label: "D", text: "결과물이 실제 사용자에게 도움이 되는지 먼저 확인한다.", value: "Make a Difference" },
+      { label: "E", text: "팀원이 이해하기 쉽게 내용을 풀어서 공유한다.", value: "Care" }
+    ]
+  },
+  {
+    id: 3,
+    text: "팀원이 맡은 부분을 어려워하고 있어 일정이 지연될 것 같습니다. 당신의 선택은?",
+    options: [
+      { label: "A", text: "현재 상황을 솔직하게 공유하고 일정 조정이 필요한지 논의한다.", value: "Act with Integrity" },
+      { label: "B", text: "업무를 다시 나누어 함께 해결할 방법을 찾는다.", value: "Work Together" },
+      { label: "C", text: "먼저 팀원의 부담을 이해하고 필요한 도움을 묻는다.", value: "Care" },
+      { label: "D", text: "더 빠르게 해결할 수 있는 AI Tool이나 새로운 방식을 찾아본다.", value: "Reimagine the Possible" },
+      { label: "E", text: "최종 결과물의 목적을 다시 확인하고 우선순위를 조정한다.", value: "Make a Difference" }
+    ]
+  },
+  {
+    id: 4,
+    text: "클라이언트 발표 전날, 데이터 오류를 발견했습니다. 수정하면 메시지가 바뀔 수 있습니다. 어떻게 하겠습니까?",
+    options: [
+      { label: "A", text: "오류를 즉시 수정하고 팀장에게 상황을 투명하게 공유한다.", value: "Act with Integrity" },
+      { label: "B", text: "팀 전체가 함께 야간 작업으로 해결 방안을 찾는다.", value: "Work Together" },
+      { label: "C", text: "밤새 작업해야 할 팀원들의 컨디션을 먼저 살핀다.", value: "Care" },
+      { label: "D", text: "AI 도구를 활용해 빠르게 대안 시나리오를 만들어본다.", value: "Reimagine the Possible" },
+      { label: "E", text: "오류가 클라이언트 의사결정에 미치는 실질적 영향을 먼저 파악한다.", value: "Make a Difference" }
+    ]
+  },
+  {
+    id: 5,
+    text: "프로젝트 중간 회의에서 팀장이 원하는 방향과 당신의 분석 결과가 다릅니다. 어떻게 하겠습니까?",
+    options: [
+      { label: "A", text: "데이터와 근거를 정리해 정중하게 의견 차이를 공유한다.", value: "Act with Integrity" },
+      { label: "B", text: "팀원들과 먼저 의견을 모아 방향을 조율해본다.", value: "Work Together" },
+      { label: "C", text: "팀장이 왜 그 방향을 선호하는지 먼저 이해하려 한다.", value: "Care" },
+      { label: "D", text: "두 방향을 모두 실험할 수 있는 빠른 프로토타입을 제안한다.", value: "Reimagine the Possible" },
+      { label: "E", text: "어떤 방향이 고객에게 더 큰 가치를 줄 수 있는지 기준으로 논의한다.", value: "Make a Difference" }
+    ]
+  },
+  {
+    id: 6,
+    text: "Pre-boarding 미션에서 앱 프로토타입을 만들 때, 당신이 가장 집중하고 싶은 것은?",
+    options: [
+      { label: "A", text: "앱의 논리적 흐름과 검증 가능한 가정을 먼저 정리한다.", value: "Act with Integrity" },
+      { label: "B", text: "팀원 각자의 아이디어가 모두 반영되도록 협업 방식을 설계한다.", value: "Work Together" },
+      { label: "C", text: "실제 사용자가 불편하지 않도록 UX를 세심하게 고민한다.", value: "Care" },
+      { label: "D", text: "기존에 없던 방식이나 기능을 실험해보는 것을 즐긴다.", value: "Reimagine the Possible" },
+      { label: "E", text: "이 앱이 실제 현장에서 문제를 해결할 수 있는지를 중심에 둔다.", value: "Make a Difference" }
+    ]
+  },
+  {
+    id: 7,
+    text: "팀 배정 후 Main Core Value를 선택하는 논의에서 의견이 모이지 않습니다. 당신의 접근은?",
+    options: [
+      { label: "A", text: "각 Core Value의 정의와 사례를 비교해 객관적으로 검토한다.", value: "Act with Integrity" },
+      { label: "B", text: "모든 팀원이 공감할 수 있는 공통점을 찾아 합의를 이끈다.", value: "Work Together" },
+      { label: "C", text: "소수 의견도 충분히 들어보는 시간을 갖자고 제안한다.", value: "Care" },
+      { label: "D", text: "기존 선택 방식 대신 창의적인 결정 프로세스를 제안한다.", value: "Reimagine the Possible" },
+      { label: "E", text: "우리 팀의 앱 아이디어와 가장 잘 맞는 가치를 기준으로 판단한다.", value: "Make a Difference" }
+    ]
+  }
+];
+
+const PwCLogo = `<svg width="72" height="28" viewBox="0 0 130 48" xmlns="http://www.w3.org/2000/svg">
+  <rect x="68" y="0" width="22" height="9" fill="#E85D04"/>
+  <rect x="94" y="0" width="28" height="9" fill="#E85D04"/>
+  <rect x="81" y="12" width="22" height="9" fill="#E85D04"/>
+  <text x="0" y="44" font-family="Georgia,serif" font-size="40" font-weight="700" fill="#E85D04" letter-spacing="-1">pwc</text>
+</svg>`;
+
+let state = {
+  screen: 1,
+  checked: false,
+  currentQ: 0,
+  answers: [],
+  selectedOption: null,
+  showFlow: false,
+  participantId: "NJ-" + String(Math.floor(Math.random() * 900) + 100)
+};
+
+function topBar(showBack, onBack) {
+  return `
+    <div class="topbar">
+      <div class="pwc-logo">${PwCLogo}</div>
+      <span class="app-name">Core Value Diagnosis</span>
+    </div>
+    ${showBack ? `<button class="back-btn" onclick="${onBack}">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      이전으로
+    </button>` : ''}
+  `;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  let html = '';
+
+  if (state.screen === 1) {
+    html = `<div class="screen">
+      ${topBar(false)}
+      <p class="hero-title">당신이 더 중요하게<br>생각하는 것은?</p>
+      <p class="hero-sub">Predict with Code 미션을 시작하기 전, 짧은 상황형 질문을 통해 여러분의 가치 판단 방식을 확인합니다.</p>
+      <div class="lock-card">
+        <div class="lock-card-icon">🔒</div>
+        <div>
+          <p><strong>응답 결과 비공개 원칙</strong>응답 결과는 다양한 가치 관점이 섞인 팀 구성을 위한 참고 자료로만 활용됩니다. 개인별 결과는 본인과 팀원에게 공개되지 않습니다.</p>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="go(2)">시작하기</button>
+      <p class="hint-text">총 7개 질문 · 약 3분 소요</p>
+    </div>`;
+
+  } else if (state.screen === 2) {
+    html = `<div class="screen">
+      ${topBar(true, 'go(1)')}
+      <h2>응답 결과 활용 안내</h2>
+      <p class="body-text">Core Value Diagnosis는 개인을 평가하거나 순위를 매기기 위한 테스트가 아닙니다. 여러분의 응답은 교육팀이 다양한 관점이 섞인 팀을 구성하기 위한 참고 데이터로만 활용됩니다.</p>
+      ${["개인 결과는 본인에게 공개되지 않습니다.",
+         "개인 결과는 팀원에게 공개되지 않습니다.",
+         "교육팀은 팀 구성 참고 목적으로만 응답 데이터를 활용합니다.",
+         "팀 배정 후에는 팀원들과 논의하여 하나의 Main Core Value를 선택합니다."
+        ].map((t, i) => `
+        <div class="principle">
+          <div class="pnum">${i+1}</div>
+          <div class="ptext">${t}</div>
+        </div>`).join('')}
+      <div class="checkbox-wrapper ${state.checked ? 'checked' : ''}" onclick="toggleCheck()">
+        <div class="custom-check">
+          <svg class="check-icon" width="13" height="13" viewBox="0 0 12 12" fill="none">
+            <polyline points="2,6 5,9 10,3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="checkbox-label">위 내용을 확인했습니다.</span>
+      </div>
+      <button class="btn btn-primary" onclick="startQ()" ${!state.checked ? 'disabled' : ''}>질문 시작하기</button>
+    </div>`;
+
+  } else if (state.screen === 3) {
+    const q = QUESTIONS[state.currentQ];
+    const pct = Math.round((state.currentQ / QUESTIONS.length) * 100);
+    const isLast = state.currentQ === QUESTIONS.length - 1;
+    html = `<div class="screen">
+      ${topBar(false)}
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span class="progress-label">Question ${state.currentQ + 1} / ${QUESTIONS.length}</span>
+          <span class="progress-pct">${pct}% 완료</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${pct}%"></div>
+        </div>
+      </div>
+      <div class="q-badge">Q${state.currentQ + 1}</div>
+      <p class="q-text">${q.text}</p>
+      ${q.options.map((o, i) => `
+        <div class="option ${state.selectedOption === i ? 'selected' : ''}" onclick="pick(${i})">
+          <div class="opt-label">${o.label}</div>
+          <div class="opt-text">${o.text}</div>
+        </div>`).join('')}
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="next()" ${state.selectedOption === null ? 'disabled' : ''}>
+        ${isLast ? '응답 확인하기' : '다음 질문'}
+      </button>
+    </div>`;
+
+  } else if (state.screen === 4) {
+    html = `<div class="screen">
+      ${topBar(true, 'go(3)')}
+      <h2>제출 전 확인</h2>
+      <p class="body-text">응답을 제출하면 결과는 교육팀의 팀 구성 참고 데이터로 활용됩니다. 개인별 Core Value 결과는 본인과 팀원에게 공개되지 않습니다.</p>
+      <div class="confirm-table">
+        <div class="confirm-row"><span class="confirm-key">응답 문항 수</span><span class="confirm-val">7개</span></div>
+        <div class="confirm-row"><span class="confirm-key">결과 공개 여부</span><span class="confirm-val private">🔒 비공개</span></div>
+        <div class="confirm-row"><span class="confirm-key">활용 목적</span><span class="confirm-val">가치 혼합형 팀 구성 참고</span></div>
+        <div class="confirm-row"><span class="confirm-key">다음 단계</span><span class="confirm-val">교육팀 팀 구성 후 미션 안내</span></div>
+      </div>
+      <button class="btn btn-primary" onclick="submit()">제출하기</button>
+      <button class="btn btn-secondary" onclick="go(3)">돌아가서 수정하기</button>
+    </div>`;
+
+  } else if (state.screen === 5) {
+    const flowSteps = ["Core Value Diagnosis","Team Formation","Main Core Value Selection","SCOPE Process","App Prototype","Final Pitch"];
+    html = `<div class="screen">
+      ${topBar(false)}
+      <div class="complete-center">
+        <div class="complete-emoji">✅</div>
+        <p class="complete-title">Check-in 완료!</p>
+        <p class="complete-sub">응답이 정상적으로 제출되었습니다.<br>교육팀은 응답 데이터를 참고하여 다양한 가치 관점이 섞인 팀을 구성할 예정입니다.</p>
+      </div>
+      <div class="private-banner">
+        <span>🔒</span>
+        <span>개인별 결과는 본인과 팀원에게 공개되지 않습니다.</span>
+      </div>
+      <p class="body-text">팀 배정 이후, 팀원들과 함께 하나의 Main Core Value를 선택하고 이를 바탕으로 앱 아이디어를 발전시키게 됩니다.</p>
+      <button class="btn btn-primary" onclick="toggleFlow()">미션 안내 확인하기 ${state.showFlow ? '▲' : '▼'}</button>
+      ${state.showFlow ? `
+      <div class="flow-wrap">
+        <div class="flow-label">PREDICT WITH CODE 미션 흐름</div>
+        ${flowSteps.map((s, i) => `
+          <div class="flow-item">
+            <div class="flow-col">
+              <div class="flow-dot ${i === 0 ? '' : 'gray'}"></div>
+              ${i < flowSteps.length - 1 ? '<div class="flow-line"></div>' : ''}
+            </div>
+            <span class="flow-name ${i === 0 ? 'active' : 'muted'}">${s}${i === 0 ? ' ✓' : ''}</span>
+          </div>`).join('')}
+      </div>` : ''}
+    </div>`;
+  }
+
+  app.innerHTML = html;
+}
+
+function go(n) { state.screen = n; render(); window.scrollTo(0,0); }
+function toggleCheck() { state.checked = !state.checked; render(); }
+function startQ() {
+  if (!state.checked) return;
+  state.screen = 3; state.currentQ = 0; state.answers = []; state.selectedOption = null;
+  render(); window.scrollTo(0,0);
+}
+function pick(i) { state.selectedOption = i; render(); }
+function next() {
+  if (state.selectedOption === null) return;
+  const q = QUESTIONS[state.currentQ];
+  const o = q.options[state.selectedOption];
+  state.answers.push({ questionId: q.id, selectedOption: o.label, mappedValue: o.value });
+  if (state.currentQ === QUESTIONS.length - 1) { state.screen = 4; state.selectedOption = null; }
+  else { state.currentQ++; state.selectedOption = null; }
+  render(); window.scrollTo(0,0);
+}
+function submit() {
+  const scores = {"Act with Integrity":0,"Make a Difference":0,"Care":0,"Work Together":0,"Reimagine the Possible":0};
+  state.answers.forEach(a => { scores[a.mappedValue]++; });
+  console.log("[Core Value Diagnosis] 제출 (관리자 전용):", JSON.stringify({
+    participantId: state.participantId, completed: true,
+    answers: state.answers, valueScores: scores,
+    submittedAt: new Date().toLocaleString('ko-KR')
+  }, null, 2));
+  state.screen = 5; state.showFlow = false;
+  render(); window.scrollTo(0,0);
+}
+function toggleFlow() { state.showFlow = !state.showFlow; render(); }
+
+render();
+</script>
+</body>
+</html>
