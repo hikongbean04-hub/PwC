@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>두근두근 신입의 첫 프로젝트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Noto Sans KR','Segoe UI',system-ui,sans-serif;}
+.app{background:#fff;min-height:100vh;}
+.scr{display:none;flex-direction:column;align-items:center;padding:24px 18px 48px;min-height:100vh;background:#fff;position:relative;overflow:hidden;}
+.scr.on{display:flex;}
+.deco{position:absolute;pointer-events:none;z-index:0;user-select:none;font-style:normal;}
+.z1{position:relative;z-index:1;width:100%;}
+.center{text-align:center;}
+.orange-tag{display:inline-block;background:#E8500A;color:#fff;font-size:10px;font-weight:800;padding:5px 16px;border-radius:20px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+.bmain{background:#E8500A;color:#fff;border:none;border-radius:18px;padding:16px 36px;font-size:15px;font-weight:800;cursor:pointer;width:100%;max-width:340px;transition:all 0.2s;font-family:inherit;display:block;margin:0 auto;}
+.bmain:hover{background:#C94208;transform:translateY(-2px);}
+.bghost{background:#fff;color:#E8500A;border:3px solid #E8500A;border-radius:16px;padding:12px 28px;font-size:13px;font-weight:800;cursor:pointer;transition:all 0.18s;font-family:inherit;}
+.bghost:hover{background:#FFF5F0;}
+.tw{width:100%;max-width:380px;margin:0 auto;}
+.trow{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.tlbl{font-size:12px;font-weight:800;color:#E8500A;}
+.tpct{font-size:13px;font-weight:900;color:#E8500A;}
+.ttrack{height:14px;background:#FFE0CC;border-radius:7px;overflow:hidden;border:1.5px solid #FFB380;}
+.tfill{height:100%;background:#E8500A;border-radius:6px;transition:width 0.7s cubic-bezier(.4,0,.2,1);}
+.cb{background:#fff;border:2.5px solid #EBEBEB;border-radius:16px;padding:14px 18px;text-align:left;cursor:pointer;font-size:14px;color:#333;font-family:inherit;width:100%;line-height:1.55;transition:all 0.16s;display:block;}
+.cb:hover{border-color:#E8500A;background:#FFF5F0;transform:translateX(4px);}
+.cb:disabled{cursor:default;transform:none;}
+.cb.chosen{border-color:#E8500A;background:#FFF0E8;}
+.bubble{border-radius:18px;padding:12px 18px;font-size:13px;line-height:1.65;position:relative;display:inline-block;max-width:100%;}
+.bubble-orange{background:#E8500A;color:#fff;}
+.bubble-orange::after{content:'';position:absolute;bottom:-11px;left:24px;border:7px solid transparent;border-top-color:#E8500A;}
+.bubble-light{background:#FFF0E8;color:#333;border:2px solid #E8500A;}
+.bubble-light::after{content:'';position:absolute;bottom:-13px;left:24px;border:7px solid transparent;border-top-color:#E8500A;}
+.bubble-blue{background:#EEF6FF;color:#333;border:2px solid #2D9CDB;}
+.bubble-blue::after{content:'';position:absolute;bottom:-13px;left:24px;border:7px solid transparent;border-top-color:#2D9CDB;}
+.bubble-yellow{background:#FFFBF0;color:#333;border:2px solid #E6A000;}
+.bubble-yellow::after{content:'';position:absolute;bottom:-13px;left:24px;border:7px solid transparent;border-top-color:#E6A000;}
+.bubble-purple{background:#F0EEFF;color:#333;border:2px solid #7F77DD;}
+.bubble-purple::after{content:'';position:absolute;bottom:-13px;left:24px;border:7px solid transparent;border-top-color:#7F77DD;}
+.fb-card{background:#FFF5F0;border:2.5px solid #E8500A;border-radius:18px;padding:16px 18px;width:100%;max-width:480px;}
+.fb-trust{display:inline-flex;align-items:center;gap:6px;background:#E8500A;color:#fff;font-size:13px;font-weight:900;padding:6px 16px;border-radius:20px;margin-bottom:10px;}
+.fb-trust.down{background:#E74C3C;}
+.fb-txt{font-size:13px;color:#333;line-height:1.7;}
+.tl-strip{display:flex;align-items:center;gap:0;width:100%;max-width:480px;margin:0 auto;padding:0 8px;}
+.tl-node{display:flex;flex-direction:column;align-items:center;flex:1;gap:4px;}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:#FFD4B0;border:2px solid #E8500A;transition:all 0.3s;}
+.tl-dot.done{background:#E8500A;}
+.tl-dot.active{background:#E8500A;width:18px;height:18px;box-shadow:0 0 0 4px #FFD4B0;}
+.tl-label{font-size:9px;font-weight:700;color:#ccc;text-align:center;line-height:1.3;}
+.tl-label.done,.tl-label.active{color:#E8500A;}
+.tl-label.active{font-weight:900;}
+.tl-line{flex:1;height:3px;background:#FFD4B0;margin-bottom:18px;}
+.tl-line.done{background:#E8500A;}
+.scene-card{background:#FFF8F4;border-radius:24px;padding:20px 16px;width:100%;max-width:480px;border:2px solid #FFD4B0;}
+.time-badge{display:inline-flex;align-items:center;gap:6px;background:#E8500A;color:#fff;font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;margin-bottom:14px;}
+.log-item{background:#fff;border:2px solid #FFD4B0;border-radius:14px;padding:12px 14px;margin-bottom:8px;}
+.log-ep{font-size:10px;color:#E8500A;font-weight:800;margin-bottom:4px;}
+.log-choice{font-size:13px;color:#333;margin-bottom:6px;}
+.log-trust{display:inline-flex;align-items:center;gap:5px;background:#E8500A;color:#fff;font-size:11px;font-weight:800;padding:3px 12px;border-radius:12px;}
+.log-trust.dn{background:#E74C3C;}
+
+/* ── GRADE CARD ── */
+.grade-card{width:100%;max-width:460px;border-radius:24px;padding:22px 18px 20px;text-align:center;border:3px solid #E8500A;background:#FFF5F0;position:relative;overflow:hidden;}
+.grade-card::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:#E8500A;border-radius:20px 20px 0 0;}
+.grade-emoji{font-size:52px;display:block;margin-bottom:8px;animation:popIn 0.5s cubic-bezier(.4,0,.2,1) both;}
+@keyframes popIn{0%{transform:scale(0.3) rotate(-10deg);opacity:0;}70%{transform:scale(1.2) rotate(3deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
+.grade-stars{font-size:24px;letter-spacing:2px;margin-bottom:10px;}
+.grade-title-small{font-size:10px;font-weight:800;color:#E8500A;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.grade-headline{font-size:19px;font-weight:900;color:#1a1a1a;line-height:1.3;margin-bottom:6px;}
+.grade-sub{display:inline-block;font-size:12px;font-weight:800;padding:5px 16px;border-radius:20px;margin-bottom:12px;}
+.grade-quote{font-size:13px;color:#555;line-height:1.75;font-style:italic;background:#fff;border-radius:12px;padding:12px 14px;border:1.5px solid #FFD4B0;}
+.grade-quote strong{color:#E8500A;font-style:normal;}
+
+/* grade color variants */
+.gc-s{border-color:#E8500A;background:linear-gradient(135deg,#FFF5F0,#FFE8D6);}
+.gc-a{border-color:#FF8C42;background:linear-gradient(135deg,#FFF8F0,#FFE8D6);}
+.gc-b{border-color:#F5A623;background:linear-gradient(135deg,#FFFBF0,#FFF3D6);}
+.gc-c{border-color:#B0B0B0;background:linear-gradient(135deg,#F8F8F8,#EFEFEF);}
+.gc-s::before{background:#E8500A;}
+.gc-a::before{background:#FF8C42;}
+.gc-b::before{background:#F5A623;}
+.gc-c::before{background:#B0B0B0;}
+.gs-s{background:#E8500A;color:#fff;}
+.gs-a{background:#FF8C42;color:#fff;}
+.gs-b{background:#F5A623;color:#7A4A00;}
+.gs-c{background:#B0B0B0;color:#fff;}
+</style>
+
+<div class="app" id="app">
+
+<!-- START -->
+<div class="scr on" id="s0">
+  <div class="deco" style="top:3%;left:-2%;font-size:88px;opacity:0.22">🤝</div>
+  <div class="deco" style="top:14%;right:-2%;font-size:80px;opacity:0.2">💡</div>
+  <div class="deco" style="bottom:24%;left:1%;font-size:72px;opacity:0.2">⭐</div>
+  <div class="deco" style="bottom:6%;right:0%;font-size:76px;opacity:0.2">🚀</div>
+  <div class="deco" style="top:42%;left:34%;font-size:140px;opacity:0.1">🧡</div>
+  <div class="deco" style="top:8%;left:28%;font-size:40px;opacity:0.28">⭐</div>
+  <div class="deco" style="top:30%;right:6%;font-size:34px;opacity:0.25">⭐</div>
+  <div class="deco" style="bottom:38%;left:12%;font-size:30px;opacity:0.22">✨</div>
+  <div class="deco" style="bottom:16%;left:38%;font-size:36px;opacity:0.25">⭐</div>
+  <div class="deco" style="top:60%;right:14%;font-size:28px;opacity:0.22">✨</div>
+  <div class="deco" style="top:22%;left:8%;font-size:26px;opacity:0.2">✨</div>
+
+  <div class="z1 center" style="max-width:480px;margin:0 auto;">
+    <div class="orange-tag">삼일PwC · Pre-boarding 2026</div>
+    <div style="font-size:26px;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:6px;">두근두근 신입의<br>첫 프로젝트</div>
+    <div style="font-size:13px;color:#888;margin-bottom:16px;">Work Together로 시작하는 삼일이의 하루</div>
+    <div class="tw" style="margin-bottom:20px;">
+      <div class="trow"><span class="tlbl">🤝 Team Trust</span><span class="tpct" id="p0">0%</span></div>
+      <div class="ttrack"><div class="tfill" id="f0" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="z1" style="max-width:480px;margin:0 auto;">
+    <svg width="100%" viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="200" x2="480" y2="200" stroke="#FFD4B0" stroke-width="2"/>
+      <rect x="2" y="8" width="140" height="34" rx="10" fill="#E8500A"/>
+      <text x="72" y="23" text-anchor="middle" font-size="9" fill="#fff" font-weight="800">팀장님</text>
+      <text x="72" y="36" text-anchor="middle" font-size="8.5" fill="#fff">오늘도 같이 잘해봐요!</text>
+      <polygon points="60,42 72,42 66,50" fill="#E8500A"/>
+      <rect x="338" y="4" width="140" height="42" rx="10" fill="#FFF0E8" stroke="#E8500A" stroke-width="2"/>
+      <text x="408" y="20" text-anchor="middle" font-size="9" fill="#E8500A" font-weight="800">동기</text>
+      <text x="408" y="32" text-anchor="middle" font-size="8.5" fill="#555">커뮤니케이션이</text>
+      <text x="408" y="43" text-anchor="middle" font-size="8.5" fill="#555">팀워크를 만들어요!</text>
+      <polygon points="396,46 408,46 402,54" fill="#E8500A"/>
+      <g transform="translate(14,78)">
+        <ellipse cx="40" cy="97" rx="22" ry="5" fill="#FFD4B0" opacity="0.5"/>
+        <rect x="26" y="82" width="9" height="15" rx="4" fill="#C94208"/><rect x="45" y="82" width="9" height="15" rx="4" fill="#993210"/>
+        <ellipse cx="30" cy="97" rx="7" ry="4" fill="#993210"/><ellipse cx="50" cy="97" rx="7" ry="4" fill="#7A2508"/>
+        <rect x="16" y="46" width="48" height="40" rx="9" fill="#C94208"/>
+        <polygon points="38,48 42,48 44,70 40,74 36,70" fill="#FFD166"/>
+        <rect x="32" y="45" width="16" height="8" rx="4" fill="#fff" opacity="0.9"/>
+        <rect x="4" y="52" width="14" height="9" rx="4" fill="#C94208"/><rect x="62" y="52" width="14" height="9" rx="4" fill="#C94208"/>
+        <rect x="59" y="48" width="18" height="24" rx="4" fill="#fff" stroke="#C94208" stroke-width="1.5"/>
+        <rect x="61" y="50" width="14" height="18" rx="2" fill="#E8F4FF"/>
+        <rect x="20" y="10" width="40" height="38" rx="12" fill="#FFD4A0"/>
+        <rect x="22" y="6" width="36" height="12" rx="8" fill="#4A3020"/>
+        <rect x="22" y="12" width="6" height="10" rx="3" fill="#4A3020"/><rect x="52" y="12" width="6" height="10" rx="3" fill="#4A3020"/>
+        <ellipse cx="33" cy="24" rx="4" ry="4.5" fill="#fff"/><ellipse cx="47" cy="24" rx="4" ry="4.5" fill="#fff"/>
+        <ellipse cx="34" cy="25" rx="2.5" ry="3" fill="#2D2D2D"/><ellipse cx="48" cy="25" rx="2.5" ry="3" fill="#2D2D2D"/>
+        <line x1="29" y1="18" x2="37" y2="18" stroke="#4A3020" stroke-width="2" stroke-linecap="round"/>
+        <line x1="43" y1="18" x2="51" y2="18" stroke="#4A3020" stroke-width="2" stroke-linecap="round"/>
+        <path d="M32 34 Q40 38 48 34" stroke="#C07030" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(175,46)">
+        <ellipse cx="65" cy="148" rx="36" ry="6" fill="#FFD4B0" opacity="0.6"/>
+        <rect x="47" y="126" width="14" height="20" rx="7" fill="#E8500A"/><rect x="69" y="126" width="14" height="20" rx="7" fill="#C94208"/>
+        <ellipse cx="54" cy="146" rx="11" ry="6" fill="#C94208"/><ellipse cx="76" cy="146" rx="11" ry="6" fill="#993210"/>
+        <rect x="26" y="72" width="78" height="60" rx="14" fill="#E8500A"/>
+        <rect x="38" y="84" width="20" height="14" rx="4" fill="#FF8C42"/><rect x="62" y="84" width="14" height="14" rx="4" fill="#FFD166"/>
+        <rect x="38" y="100" width="14" height="11" rx="4" fill="#FFD166"/><rect x="55" y="100" width="20" height="11" rx="4" fill="#FF8C42" opacity="0.7"/>
+        <rect x="79" y="90" width="20" height="28" rx="4" fill="#fff"/>
+        <rect x="82" y="85" width="14" height="8" rx="3" fill="#FFD166"/>
+        <text x="89" y="101" text-anchor="middle" font-size="7" fill="#E8500A" font-weight="800">ID</text>
+        <text x="89" y="112" text-anchor="middle" font-size="5.5" fill="#aaa">삼일이</text>
+        <rect x="6" y="83" width="22" height="13" rx="7" fill="#E8500A"/><rect x="102" y="83" width="22" height="13" rx="7" fill="#E8500A"/>
+        <rect x="4" y="80" width="24" height="17" rx="5" fill="#333"/>
+        <rect x="6" y="82" width="20" height="12" rx="3" fill="#44D4FF" opacity="0.8"/>
+        <rect x="32" y="16" width="66" height="62" rx="20" fill="#FFD4A0"/>
+        <rect x="40" y="9" width="50" height="15" rx="10" fill="#E8500A"/>
+        <ellipse cx="52" cy="42" rx="7" ry="8.5" fill="#fff"/><ellipse cx="78" cy="42" rx="7" ry="8.5" fill="#fff"/>
+        <ellipse cx="53" cy="44" rx="4.5" ry="5" fill="#2D2D2D"/><ellipse cx="79" cy="44" rx="4.5" ry="5" fill="#2D2D2D"/>
+        <circle cx="54.5" cy="42" r="1.5" fill="#fff"/><circle cx="80.5" cy="42" r="1.5" fill="#fff"/>
+        <ellipse cx="40" cy="55" rx="8" ry="5" fill="#FFB347" opacity="0.45"/><ellipse cx="90" cy="55" rx="8" ry="5" fill="#FFB347" opacity="0.45"/>
+        <path d="M48 59 Q65 70 82 59" stroke="#E8500A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M44 31 Q52 26 60 31" stroke="#C07030" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M70 31 Q78 26 86 31" stroke="#C07030" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(358,90)">
+        <ellipse cx="40" cy="97" rx="22" ry="4" fill="#FFE8A0" opacity="0.5"/>
+        <rect x="26" y="82" width="9" height="14" rx="4" fill="#D4900A"/><rect x="45" y="82" width="9" height="14" rx="4" fill="#B07808"/>
+        <ellipse cx="30" cy="96" rx="7" ry="4" fill="#B07808"/><ellipse cx="50" cy="96" rx="7" ry="4" fill="#8A5C06"/>
+        <rect x="16" y="46" width="48" height="40" rx="9" fill="#F5A623"/>
+        <rect x="28" y="72" width="24" height="10" rx="5" fill="#D4900A" opacity="0.5"/>
+        <rect x="4" y="52" width="14" height="9" rx="4" fill="#F5A623"/><rect x="62" y="52" width="14" height="9" rx="4" fill="#F5A623"/>
+        <rect x="60" y="49" width="16" height="20" rx="3" fill="#fff" stroke="#F5A623" stroke-width="1.5"/>
+        <rect x="20" y="10" width="40" height="38" rx="12" fill="#FFD4A0"/>
+        <ellipse cx="40" cy="10" rx="22" ry="10" fill="#3D2B1F"/>
+        <ellipse cx="28" cy="14" rx="10" ry="8" fill="#3D2B1F"/><ellipse cx="52" cy="14" rx="10" ry="8" fill="#3D2B1F"/>
+        <ellipse cx="33" cy="25" rx="5" ry="5.5" fill="#fff"/><ellipse cx="47" cy="25" rx="5" ry="5.5" fill="#fff"/>
+        <ellipse cx="34" cy="26" rx="3.2" ry="3.5" fill="#2D2D2D"/><ellipse cx="48" cy="26" rx="3.2" ry="3.5" fill="#2D2D2D"/>
+        <path d="M30 36 Q40 44 50 36" stroke="#C07030" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </g>
+      <rect x="178" y="172" width="164" height="26" rx="11" fill="#E8500A"/>
+      <polygon points="246,172 258,172 252,164" fill="#E8500A"/>
+      <text x="260" y="185" text-anchor="middle" font-size="8.5" fill="#fff" font-weight="800">첫 프로젝트, 열심히 해볼게요!</text>
+      <text x="260" y="196" text-anchor="middle" font-size="7.5" fill="#FFD4B0">Work Together 시작 ✨</text>
+    </svg>
+  </div>
+
+  <div class="z1" style="display:flex;flex-direction:column;align-items:center;gap:14px;max-width:380px;margin:0 auto;">
+    <button class="bmain" onclick="go(1)">삼일이의 하루 시작하기 →</button>
+    <div style="background:#FFF5F0;border:2px solid #FFB380;border-radius:14px;padding:10px 16px;width:100%;font-size:11px;color:#E8500A;font-weight:700;text-align:center;line-height:2;">
+      ☀️ 아침 출근 → 📋 팀장 미팅 → ☕ 선배 대화 → 🤝 동기 협업 → 📁 클라이언트 → 🌙 마무리
+    </div>
+    <div style="font-size:10px;color:#ccc;text-align:center;">Sample App · PwC Pre-boarding · Predict with Code</div>
+  </div>
+</div>
+
+<!-- SCENE SCREENS -->
+<div class="scr" id="s1"></div>
+<div class="scr" id="s2"></div>
+<div class="scr" id="s3"></div>
+<div class="scr" id="s4"></div>
+<div class="scr" id="s5"></div>
+
+<!-- RESULT -->
+<div class="scr" id="s6">
+  <div class="deco" style="top:3%;left:1%;font-size:70px;opacity:0.18">🎉</div>
+  <div class="deco" style="top:8%;right:0;font-size:60px;opacity:0.18">⭐</div>
+  <div class="deco" style="bottom:18%;left:2%;font-size:60px;opacity:0.18">🚀</div>
+  <div class="deco" style="bottom:10%;right:1%;font-size:60px;opacity:0.18">✅</div>
+
+  <div class="z1 center" style="max-width:480px;margin:0 auto;">
+    <div class="orange-tag">Day 1 완료!</div>
+    <div style="font-size:22px;font-weight:900;color:#1a1a1a;margin-bottom:4px;">첫 프로젝트 마무리 🎉</div>
+    <div style="font-size:13px;color:#888;margin-bottom:14px;">삼일이의 Work Together 결과</div>
+    <div class="tw" style="margin-bottom:16px;">
+      <div class="trow"><span class="tlbl">🤝 Team Trust</span><span class="tpct" id="p6">0%</span></div>
+      <div class="ttrack" style="height:18px;border-radius:9px;"><div class="tfill" id="f6" style="width:0%;height:100%;border-radius:9px;"></div></div>
+    </div>
+  </div>
+
+  <!-- party SVG -->
+  <div class="z1" style="max-width:480px;margin:0 auto;">
+    <svg width="100%" viewBox="0 0 480 145" xmlns="http://www.w3.org/2000/svg">
+      <rect x="46" y="7" width="8" height="8" rx="2" fill="#E8500A" opacity="0.6" transform="rotate(25 50 11)"/>
+      <rect x="158" y="4" width="7" height="7" rx="2" fill="#FFD166" opacity="0.7"/>
+      <rect x="282" y="5" width="9" height="9" rx="2" fill="#2D9CDB" opacity="0.5"/>
+      <rect x="412" y="8" width="7" height="7" rx="2" fill="#27AE60" opacity="0.5"/>
+      <circle cx="120" cy="13" r="5" fill="#E8500A" opacity="0.35"/>
+      <circle cx="365" cy="11" r="4" fill="#FFD166" opacity="0.4"/>
+      <!-- manager -->
+      <g transform="translate(8,56) scale(0.78)">
+        <rect x="26" y="82" width="9" height="14" rx="4" fill="#C94208"/><rect x="45" y="82" width="9" height="14" rx="4" fill="#993210"/>
+        <ellipse cx="30" cy="96" rx="7" ry="4" fill="#993210"/><ellipse cx="50" cy="96" rx="7" ry="4" fill="#7A2508"/>
+        <rect x="16" y="46" width="48" height="40" rx="9" fill="#C94208"/>
+        <polygon points="38,48 42,48 44,70 40,74 36,70" fill="#FFD166"/>
+        <rect x="32" y="45" width="16" height="8" rx="4" fill="#fff" opacity="0.9"/>
+        <rect x="4" y="52" width="14" height="9" rx="4" fill="#C94208"/><rect x="62" y="52" width="14" height="9" rx="4" fill="#C94208"/>
+        <rect x="20" y="10" width="40" height="38" rx="12" fill="#FFD4A0"/>
+        <rect x="22" y="6" width="36" height="12" rx="8" fill="#4A3020"/>
+        <ellipse cx="33" cy="24" rx="4" ry="4.5" fill="#fff"/><ellipse cx="47" cy="24" rx="4" ry="4.5" fill="#fff"/>
+        <ellipse cx="34" cy="25" rx="2.5" ry="3" fill="#2D2D2D"/><ellipse cx="48" cy="25" rx="2.5" ry="3" fill="#2D2D2D"/>
+        <path d="M32 34 Q40 38 48 34" stroke="#C07030" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </g>
+      <rect x="4" y="18" width="126" height="28" rx="9" fill="#E8500A"/>
+      <polygon points="44,46 56,46 50,52" fill="#E8500A"/>
+      <text x="67" y="31" text-anchor="middle" font-size="8.5" fill="#fff" font-weight="700">함께 소통하려는</text>
+      <text x="67" y="43" text-anchor="middle" font-size="8.5" fill="#fff">태도가 좋았어요!</text>
+      <!-- senior -->
+      <g transform="translate(96,62) scale(0.76)">
+        <rect x="26" y="82" width="9" height="14" rx="4" fill="#1A7ABF"/><rect x="45" y="82" width="9" height="14" rx="4" fill="#145F99"/>
+        <ellipse cx="30" cy="96" rx="7" ry="4" fill="#145F99"/><ellipse cx="50" cy="96" rx="7" ry="4" fill="#0D4A7A"/>
+        <rect x="16" y="46" width="48" height="40" rx="9" fill="#2D9CDB"/>
+        <path d="M34,46 L40,58 L46,46" fill="#fff" opacity="0.8"/>
+        <rect x="4" y="52" width="14" height="9" rx="4" fill="#2D9CDB"/><rect x="62" y="52" width="14" height="9" rx="4" fill="#2D9CDB"/>
+        <rect x="20" y="10" width="40" height="38" rx="12" fill="#FFD4A0"/>
+        <rect x="20" y="6" width="40" height="14" rx="8" fill="#6B4226"/>
+        <rect x="20" y="12" width="8" height="12" rx="4" fill="#6B4226"/>
+        <ellipse cx="33" cy="24" rx="4" ry="5" fill="#fff"/><ellipse cx="47" cy="24" rx="4" ry="5" fill="#fff"/>
+        <ellipse cx="34" cy="25" rx="2.8" ry="3.2" fill="#3D2B1F"/><ellipse cx="48" cy="25" rx="2.8" ry="3.2" fill="#3D2B1F"/>
+        <path d="M31 35 Q40 42 49 35" stroke="#C07030" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </g>
+      <rect x="118" y="22" width="122" height="28" rx="9" fill="#EEF6FF" stroke="#2D9CDB" stroke-width="1.5"/>
+      <polygon points="156,50 168,50 162,56" fill="#2D9CDB"/>
+      <text x="179" y="35" text-anchor="middle" font-size="8.5" fill="#0C447C" font-weight="700">질문을 잘해서</text>
+      <text x="179" y="46" text-anchor="middle" font-size="8.5" fill="#444">빨리 적응하겠어요!</text>
+      <!-- HERO -->
+      <g transform="translate(196,24) scale(0.9)">
+        <ellipse cx="45" cy="138" rx="30" ry="5" fill="#FFD4B0" opacity="0.5"/>
+        <rect x="33" y="120" width="10" height="16" rx="5" fill="#E8500A"/><rect x="47" y="120" width="10" height="16" rx="5" fill="#C94208"/>
+        <ellipse cx="38" cy="136" rx="9" ry="5" fill="#C94208"/><ellipse cx="52" cy="136" rx="9" ry="5" fill="#993210"/>
+        <rect x="18" y="68" width="54" height="56" rx="12" fill="#E8500A"/>
+        <rect x="26" y="78" width="14" height="12" rx="3" fill="#FF8C42"/><rect x="42" y="78" width="12" height="12" rx="3" fill="#FFD166"/>
+        <rect x="26" y="93" width="12" height="10" rx="3" fill="#FFD166"/><rect x="40" y="93" width="16" height="10" rx="3" fill="#FF8C42" opacity="0.7"/>
+        <rect x="58" y="82" width="16" height="24" rx="3" fill="#fff"/>
+        <rect x="61" y="77" width="10" height="7" rx="2" fill="#FFD166"/>
+        <text x="66" y="90" text-anchor="middle" font-size="6" fill="#E8500A" font-weight="800">ID</text>
+        <rect x="4" y="80" width="16" height="12" rx="6" fill="#E8500A"/><rect x="70" y="80" width="16" height="12" rx="6" fill="#E8500A"/>
+        <rect x="22" y="12" width="46" height="58" rx="16" fill="#FFD4A0"/>
+        <rect x="28" y="7" width="34" height="12" rx="8" fill="#E8500A"/>
+        <ellipse cx="36" cy="34" rx="6" ry="7" fill="#fff"/><ellipse cx="54" cy="34" rx="6" ry="7" fill="#fff"/>
+        <ellipse cx="37" cy="36" rx="4" ry="4.5" fill="#2D2D2D"/><ellipse cx="55" cy="36" rx="4" ry="4.5" fill="#2D2D2D"/>
+        <ellipse cx="27" cy="50" rx="7" ry="4.5" fill="#FFB347" opacity="0.5"/><ellipse cx="63" cy="50" rx="7" ry="4.5" fill="#FFB347" opacity="0.5"/>
+        <path d="M32 56 Q45 66 58 56" stroke="#E8500A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M30 27 Q37 22 44 27" stroke="#C07030" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M46 27 Q53 22 60 27" stroke="#C07030" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </g>
+      <rect x="196" y="2" width="104" height="20" rx="10" fill="#E8500A"/>
+      <polygon points="240,22 252,22 246,28" fill="#E8500A"/>
+      <text x="248" y="14" text-anchor="middle" font-size="9" fill="#fff" font-weight="900">첫 프로젝트 완료! 🎉</text>
+      <!-- peer -->
+      <g transform="translate(328,64) scale(0.76)">
+        <rect x="26" y="82" width="9" height="14" rx="4" fill="#D4900A"/><rect x="45" y="82" width="9" height="14" rx="4" fill="#B07808"/>
+        <ellipse cx="30" cy="96" rx="7" ry="4" fill="#B07808"/><ellipse cx="50" cy="96" rx="7" ry="4" fill="#8A5C06"/>
+        <rect x="16" y="46" width="48" height="40" rx="9" fill="#F5A623"/>
+        <rect x="28" y="72" width="24" height="10" rx="5" fill="#D4900A" opacity="0.5"/>
+        <rect x="4" y="52" width="14" height="9" rx="4" fill="#F5A623"/><rect x="62" y="52" width="14" height="9" rx="4" fill="#F5A623"/>
+        <rect x="20" y="10" width="40" height="38" rx="12" fill="#FFD4A0"/>
+        <ellipse cx="40" cy="10" rx="22" ry="10" fill="#3D2B1F"/>
+        <ellipse cx="28" cy="14" rx="10" ry="8" fill="#3D2B1F"/><ellipse cx="52" cy="14" rx="10" ry="8" fill="#3D2B1F"/>
+        <ellipse cx="33" cy="25" rx="5" ry="5.5" fill="#fff"/><ellipse cx="47" cy="25" rx="5" ry="5.5" fill="#fff"/>
+        <ellipse cx="34" cy="26" rx="3.2" ry="3.5" fill="#2D2D2D"/><ellipse cx="48" cy="26" rx="3.2" ry="3.5" fill="#2D2D2D"/>
+        <path d="M30 36 Q40 44 50 36" stroke="#C07030" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </g>
+      <rect x="328" y="20" width="122" height="28" rx="9" fill="#FFFBF0" stroke="#E6A000" stroke-width="1.5"/>
+      <polygon points="362,48 374,48 368,54" fill="#E6A000"/>
+      <text x="389" y="33" text-anchor="middle" font-size="8.5" fill="#854F0B" font-weight="700">같이 일해서</text>
+      <text x="389" y="44" text-anchor="middle" font-size="8.5" fill="#444">정말 든든했어!</text>
+    </svg>
+  </div>
+
+  <!-- ★ GRADE CARD -->
+  <div class="z1" style="max-width:460px;margin:0 auto;padding:0 16px;">
+    <div class="grade-card gc-s" id="grade-card">
+      <span class="grade-emoji" id="grade-emoji">🏆</span>
+      <div class="grade-stars" id="grade-stars">⭐⭐⭐⭐⭐</div>
+      <div class="grade-title-small">Work Together 등급</div>
+      <div class="grade-headline" id="grade-headline">명예 삼일PwC인 🎖️</div>
+      <div class="grade-sub gs-s" id="grade-sub">혹시 근속 30년차?!</div>
+      <div class="grade-quote" id="grade-quote">로딩 중...</div>
+    </div>
+  </div>
+
+  <div class="z1" style="max-width:440px;margin:12px auto 0;display:flex;flex-direction:column;align-items:center;gap:10px;padding:0 16px;">
+    <button class="bghost" onclick="toggleLog()">오늘의 선택 돌아보기</button>
+    <button class="bmain" onclick="resetAll()">🔄 다시 플레이하기</button>
+    <div style="font-size:10px;color:#ccc;text-align:center;margin-top:4px;">Sample App · PwC Pre-boarding · Predict with Code</div>
+  </div>
+  <div id="log-wrap" style="display:none;width:100%;max-width:460px;padding:0 16px 24px;" class="z1">
+    <div style="font-size:13px;font-weight:800;color:#E8500A;margin:10px 0 8px;">📋 삼일이의 오늘 선택 기록</div>
+    <div id="log-list"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var trust=0, choiceLog=[];
+
+var GRADES=[
+  {
+    min:85, cardCls:'gc-s', subCls:'gs-s',
+    emoji:'🏆', stars:'⭐⭐⭐⭐⭐',
+    headline:'명예 삼일PwC인 🎖️',
+    sub:'혹시 근속 30년차?!',
+    quote:'<strong>"팀장님보다 더 팀장님 같은 삼일이"</strong><br>첫날부터 공유, 질문, 역할 분담까지 완벽 소화. 이 사람, 신입 맞아요? 이미 Work Together DNA가 내재화된 것 같습니다. 앞으로 30년 같이 일합시다! 🥲'
+  },
+  {
+    min:65, cardCls:'gc-a', subCls:'gs-a',
+    emoji:'🌟', stars:'⭐⭐⭐⭐',
+    headline:'촉망받는 에이스 신입 ✨',
+    sub:'팀장님이 이미 픽했습니다',
+    quote:'<strong>"이 친구 어디서 왔어요? 벌써 팀워크 느낌나는데요"</strong><br>대부분의 상황에서 올바른 선택을 했어요. 소통하려는 의지가 보입니다. 조금만 더 적극적으로 공유하면 삼일이는 팀의 핵심 인재가 될 거예요! 💪'
+  },
+  {
+    min:45, cardCls:'gc-b', subCls:'gs-b',
+    emoji:'🌱', stars:'⭐⭐⭐',
+    headline:'성장 잠재력 무한 신입 📈',
+    sub:'아직 발전 중... 하지만 가능성 보임',
+    quote:'<strong>"괜찮아요, 첫날인데 뭘~"</strong><br>좋은 선택도 있었고 아쉬운 순간도 있었어요. Work Together는 연습할수록 늘어난답니다. 혼자 해결하려는 습관만 조금 내려놓으면 금방 에이스 됩니다. 다시 도전! 🔥'
+  },
+  {
+    min:0, cardCls:'gc-c', subCls:'gs-c',
+    emoji:'😅', stars:'⭐⭐',
+    headline:'홀로서기 장인 삼일이 🏝️',
+    sub:'팀원들이 살짝... 걱정했어요',
+    quote:'<strong>"혹시 팀플 과제 할 때 혼자 다 하는 스타일이었나요?"</strong><br>삼일이는 능력은 있지만 혼자 해결하려는 경향이 강했어요. Work Together의 핵심은 방향을 함께 맞추는 것! 다시 플레이해서 팀워크 마스터에 도전해보세요 🌱'
+  }
+];
+
+var SCENES=[
+  {id:1,timeBadge:"☀️ 아침 출근",tlLabel:"아침",npcType:"peer",npcName:"동기",npcColor:"#D4900A",npcBubbleCls:"bubble-yellow",npcLine:"안녕! 오늘 첫 프로젝트 같이 하게 된 동기야. 많이 긴장되지?",samillLine:"잘 부탁해! 조금 긴장되는데 열심히 해볼게. 🧡",choices:["우리 먼저 오늘 해야 할 일을 같이 정리해볼까?","일단 자리부터 먼저 가볼게!","혹시 팀장님 성격이 어떤지 알아?"],deltas:[15,5,5],feedbacks:[{trust:15,line:"같이 정리하자는 말이 좋네! 벌써 팀워크 느낌이 나.",who:"동기"},{trust:5,line:"자리 찾는 것도 중요하지! 나중에 같이 정리하자.",who:"동기"},{trust:5,line:"팀장님은 좋은 분이야. 직접 소통해보면 알 거야!",who:"동기"}]},
+  {id:2,timeBadge:"📋 오전 팀장 미팅",tlLabel:"오전",npcType:"manager",npcName:"팀장님",npcColor:"#C94208",npcBubbleCls:"bubble-light",npcLine:"이번 프로젝트 자료가 많은데, 먼저 어떤 방식으로 접근하면 좋을까요?",samillLine:"열심히 하겠습니다! 어떻게 하면 좋을까요? 🤔",choices:["핵심 이슈부터 구조화해서 팀과 공유하겠습니다.","자료를 다 읽은 뒤 혼자 정리해보겠습니다.","우선 다른 분들이 하시는 걸 보고 따라가겠습니다."],deltas:[20,5,5],feedbacks:[{trust:20,line:"좋아요. 함께 공유하며 정리하는 방식이 Work Together에 잘 맞아요.",who:"팀장님"},{trust:5,line:"혼자 정리하는 것도 좋지만, 팀과 방향을 맞추는 것도 중요해요.",who:"팀장님"},{trust:5,line:"관찰도 좋지만, 적극적으로 방향을 제안해보는 것도 좋아요.",who:"팀장님"}]},
+  {id:3,timeBadge:"☕ 점심 전 선배 대화",tlLabel:"점심 전",npcType:"senior",npcName:"선배님",npcColor:"#2D9CDB",npcBubbleCls:"bubble-blue",npcLine:"처음 보는 자료라 어려울 수 있어요. 혹시 막히는 부분 있어요?",samillLine:"감사해요! 사실 몇 가지 헷갈리는 게 있어서요.",choices:["제가 이해한 부분과 헷갈리는 부분을 나눠서 질문드려도 될까요?","전체적으로 다시 한 번 설명해주실 수 있을까요?","괜찮아요, 혼자 더 해볼게요."],deltas:[15,8,-5],feedbacks:[{trust:15,line:"좋은 질문 방식이네요! 이렇게 물으면 같이 일하기도 훨씬 편해요.",who:"선배님"},{trust:8,line:"알겠어요, 같이 보죠. 다음엔 헷갈리는 부분만 짚어오면 더 좋아요.",who:"선배님"},{trust:-5,line:"에이, 막히면 꼭 물어봐요. 혼자 끙끙대는 거 더 힘들어요!",who:"선배님"}]},
+  {id:4,timeBadge:"🤝 오후 동기 협업",tlLabel:"오후",npcType:"peer",npcName:"동기",npcColor:"#D4900A",npcBubbleCls:"bubble-yellow",npcLine:"우리 둘 다 자료 조사 맡았는데, 역할을 어떻게 나누면 좋을까?",samillLine:"맞아, 같이 효율적으로 해야지! 어떻게 할까?",choices:["산업 리서치랑 기업 분석으로 나눠서 해보자.","각자 편한 부분 아무거나 맡자.","내가 먼저 해볼게, 넌 나중에 봐줘."],deltas:[20,8,-5],feedbacks:[{trust:20,line:"역할이 명확해서 좋다! 같이 하면 훨씬 수월하겠다.",who:"동기"},{trust:8,line:"좋아, 근데 나중에 겹치지 않게 중간에 한번 맞춰보자.",who:"동기"},{trust:-5,line:"어... 같이 하는 건데 내가 뭘 하면 되는 거야?",who:"동기"}]},
+  {id:5,timeBadge:"📁 늦은 오후 클라이언트",tlLabel:"클라이언트",npcType:"client",npcName:"클라이언트",npcColor:"#7F77DD",npcBubbleCls:"bubble-purple",npcLine:"요청드린 분석 방향이 조금 다르게 전달된 것 같습니다.",samillLine:"죄송합니다. 바로 확인해보겠습니다!",choices:["제가 이해한 내용을 다시 정리해서 확인드리겠습니다.","바로 수정해서 다시 보내드리겠습니다.","어떤 부분이 다른지 다시 말씀해주실 수 있을까요?"],deltas:[15,10,10],feedbacks:[{trust:15,line:"정리해서 확인해주셔서 커뮤니케이션이 훨씬 명확해졌네요.",who:"클라이언트"},{trust:10,line:"빠른 대응 감사해요. 다음엔 방향 먼저 확인하면 더 좋을 것 같아요.",who:"클라이언트"},{trust:10,line:"물론이죠. 이렇게 명확히 확인하는 게 좋아요.",who:"클라이언트"}]}
+];
+
+var TL_LABELS=["아침","오전","점심 전","오후","클라이언트","마무리"];
+function clamp(v){return Math.max(0,Math.min(100,v));}
+function syncTrust(){var p=clamp(trust);['p0','p6'].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=p+'%';});['f0','f6'].forEach(function(id){var e=document.getElementById(id);if(e)e.style.width=p+'%';});}
+
+function go(idx){
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  if(idx===0){document.getElementById('s0').classList.add('on');}
+  else if(idx>=1&&idx<=5){buildScene(idx);document.getElementById('s'+idx).classList.add('on');}
+  else{buildResult();document.getElementById('s6').classList.add('on');}
+  window.scrollTo(0,0);syncTrust();
+}
+
+function buildResult(){
+  var p=clamp(trust);
+  var pe=document.getElementById('p6');var fe=document.getElementById('f6');
+  if(pe)pe.textContent=p+'%';if(fe)fe.style.width=p+'%';
+  var g=GRADES[GRADES.length-1];
+  for(var i=0;i<GRADES.length;i++){if(p>=GRADES[i].min){g=GRADES[i];break;}}
+  var card=document.getElementById('grade-card');
+  if(card)card.className='grade-card '+g.cardCls;
+  var fields={
+    'grade-emoji':g.emoji,
+    'grade-stars':g.stars,
+    'grade-headline':g.headline
+  };
+  Object.keys(fields).forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=fields[id];});
+  var subEl=document.getElementById('grade-sub');
+  if(subEl){subEl.className='grade-sub '+g.subCls;subEl.textContent=g.sub;}
+  var qEl=document.getElementById('grade-quote');
+  if(qEl)qEl.innerHTML=g.quote;
+  /* pop emoji */
+  var emojiEl=document.getElementById('grade-emoji');
+  if(emojiEl){emojiEl.style.animation='none';setTimeout(function(){emojiEl.style.animation='popIn 0.5s cubic-bezier(.4,0,.2,1) both';},50);}
+}
+
+function buildTLStrip(current){
+  var h='<div class="tl-strip">';
+  for(var i=0;i<6;i++){
+    var cls=i<current?'done':i===current?'active':'';
+    var lc=i<current&&i<5?'done':'';
+    h+='<div class="tl-node"><div class="tl-dot '+cls+'"></div><div class="tl-label '+cls+'">'+TL_LABELS[i]+'</div></div>';
+    if(i<5)h+='<div class="tl-line '+lc+'"></div>';
+  }
+  return h+'</div>';
+}
+
+function npcSVGsmall(type){
+  if(type==='manager')return'<g transform="translate(0,4)"><rect x="26" y="82" width="9" height="14" rx="4" fill="#C94208"/><rect x="45" y="82" width="9" height="14" rx="4" fill="#993210"/><ellipse cx="30" cy="96" rx="7" ry="4" fill="#993210"/><ellipse cx="50" cy="96" rx="7" ry="4" fill="#7A2508"/><rect x="16" y="46" width="48" height="40" rx="9" fill="#C94208"/><polygon points="38,48 42,48 44,70 40,74 36,70" fill="#FFD166"/><rect x="32" y="45" width="16" height="8" rx="4" fill="#fff" opacity="0.9"/><rect x="4" y="52" width="14" height="9" rx="4" fill="#C94208"/><rect x="62" y="52" width="14" height="9" rx="4" fill="#C94208"/><rect x="59" y="48" width="18" height="24" rx="4" fill="#fff" stroke="#C94208" stroke-width="1.5"/><rect x="61" y="50" width="14" height="18" rx="2" fill="#E8F4FF"/><rect x="20" y="10" width="40" height="38" rx="12" fill="#FFD4A0"/><rect x="22" y="6" width="36" height="12" rx="8" fill="#4A3020"/><ellipse cx="33" cy="24" rx="4" ry="4.5" fill="#fff"/><ellipse cx="47" cy="24" rx="4" ry="4.5" fill="#fff"/><ellipse cx="34" cy="25" rx="2.5" ry="3" fill="#2D2D2D"/><ellipse cx="48" cy="25" rx="2.5" ry="3" fill="#2D2D2D"/><line x1="29" y1="18" x2="37" y2="18" stroke="#4A3020" stroke-width="2" stroke-linecap="round"/><line x1="43" y1="18" x2="51" y2="18" stroke="#4A3020" stroke-width="2" stroke-linecap="round"/><path d="M32 34 Q40 38 48 34" stroke="#C07030" stroke-width="2" fill="none" stroke-linecap="round"/></g>';
+  if(type==='senior')return'<g transform="translate(0,4)"><rect x="26" y="82" width="9" height="14" rx="4" fill="#1A7ABF"/><rect x="45" y="82" width="9" height="14" rx="4" fill="#145F99"/><ellipse cx="30" cy="96" rx="7" ry="4" fill="#145F99"/><ellipse cx="50" cy="96" rx="7" ry="4" fill="#0D4A7A"/><rect x="16" y="46" width="48" height="40" rx="9" fill="#2D9CDB"/><path d="M34,46 L40,58 L46,46" fill="#fff" opacity="0.8"/><rect x="4" y="52" width="14" height="9" rx="4" fill="#2D9CDB"/><rect x="62" y="52" width="14" height="9" rx="4" fill="#2D9CDB"/><rect x="2" y="50" width="14" height="17" rx="4" fill="#fff" stroke="#2D9CDB" stroke-width="1.5"/><rect x="4" y="52" width="10" height="11" rx="2" fill="#8B5C2A" opacity="0.7"/><rect x="20" y="10" width="40" height="38" rx="12" fill="#FFD4A0"/><rect x="20" y="6" width="40" height="14" rx="8" fill="#6B4226"/><rect x="20" y="12" width="8" height="12" rx="4" fill="#6B4226"/><ellipse cx="33" cy="24" rx="4" ry="5" fill="#fff"/><ellipse cx="47" cy="24" rx="4" ry="5" fill="#fff"/><ellipse cx="34" cy="25" rx="2.8" ry="3.2" fill="#3D2B1F"/><ellipse cx="48" cy="25" rx="2.8" ry="3.2" fill="#3D2B1F"/><path d="M29 18 Q33 16 37 18" stroke="#6B4226" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M43 18 Q47 16 51 18" stroke="#6B4226" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M31 35 Q40 42 49 35" stroke="#C07030" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>';
+  if(type==='client')return'<g transform="translate(0,4)"><rect x="26" y="82" width="9" height="14" rx="4" fill="#5048AA"/><rect x="45" y="82" width="9" height="14" rx="4" fill="#3D3788"/><ellipse cx="30" cy="96" rx="7" ry="4" fill="#3D3788"/><ellipse cx="50" cy="96" rx="7" ry="4" fill="#2D2866"/><rect x="16" y="46" width="48" height="40" rx="9" fill="#7F77DD"/><polygon points="32,46 40,60 48,46" fill="#5048AA"/><rect x="36" y="46" width="8" height="14" rx="2" fill="#fff" opacity="0.9"/><rect x="4" y="52" width="14" height="9" rx="4" fill="#7F77DD"/><rect x="62" y="52" width="14" height="9" rx="4" fill="#7F77DD"/><rect x="60" y="47" width="17" height="22" rx="3" fill="#fff" stroke="#7F77DD" stroke-width="1.5"/><rect x="63" y="44" width="11" height="5" rx="2" fill="#7F77DD" opacity="0.6"/><rect x="20" y="10" width="40" height="38" rx="12" fill="#FFD4A0"/><rect x="22" y="6" width="36" height="14" rx="7" fill="#2D2D2D"/><ellipse cx="33" cy="25" rx="4" ry="5" fill="#fff"/><ellipse cx="47" cy="25" rx="4" ry="5" fill="#fff"/><ellipse cx="34" cy="26" rx="2.5" ry="3" fill="#1A1A2E"/><ellipse cx="48" cy="26" rx="2.5" ry="3" fill="#1A1A2E"/><line x1="29" y1="19" x2="37" y2="19" stroke="#2D2D2D" stroke-width="2" stroke-linecap="round"/><line x1="43" y1="19" x2="51" y2="19" stroke="#2D2D2D" stroke-width="2" stroke-linecap="round"/><path d="M33 35 Q40 39 47 35" stroke="#6B4226" stroke-width="2" fill="none" stroke-linecap="round"/></g>';
+  return'<g transform="translate(0,4)"><rect x="26" y="82" width="9" height="14" rx="4" fill="#D4900A"/><rect x="45" y="82" width="9" height="14" rx="4" fill="#B07808"/><ellipse cx="30" cy="96" rx="7" ry="4" fill="#B07808"/><ellipse cx="50" cy="96" rx="7" ry="4" fill="#8A5C06"/><rect x="16" y="46" width="48" height="40" rx="9" fill="#F5A623"/><rect x="28" y="72" width="24" height="10" rx="5" fill="#D4900A" opacity="0.5"/><rect x="4" y="52" width="14" height="9" rx="4" fill="#F5A623"/><rect x="62" y="52" width="14" height="9" rx="4" fill="#F5A623"/><rect x="60" y="49" width="16" height="20" rx="3" fill="#fff" stroke="#F5A623" stroke-width="1.5"/><rect x="20" y="10" width="40" height="38" rx="12" fill="#FFD4A0"/><ellipse cx="40" cy="10" rx="22" ry="10" fill="#3D2B1F"/><ellipse cx="28" cy="14" rx="10" ry="8" fill="#3D2B1F"/><ellipse cx="52" cy="14" rx="10" ry="8" fill="#3D2B1F"/><ellipse cx="33" cy="25" rx="5" ry="5.5" fill="#fff"/><ellipse cx="47" cy="25" rx="5" ry="5.5" fill="#fff"/><ellipse cx="34" cy="26" rx="3.2" ry="3.5" fill="#2D2D2D"/><ellipse cx="48" cy="26" rx="3.2" ry="3.5" fill="#2D2D2D"/><path d="M28 18 Q33 14 38 18" stroke="#3D2B1F" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M42 18 Q47 14 52 18" stroke="#3D2B1F" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M30 36 Q40 44 50 36" stroke="#C07030" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>';
+}
+
+var SAMILL_SMALL='<g><rect x="26" y="120" width="9" height="14" rx="4" fill="#E8500A"/><rect x="43" y="120" width="9" height="14" rx="4" fill="#C94208"/><ellipse cx="30" cy="134" rx="8" ry="4" fill="#C94208"/><ellipse cx="47" cy="134" rx="8" ry="4" fill="#993210"/><rect x="14" y="68" width="50" height="56" rx="12" fill="#E8500A"/><rect x="22" y="78" width="14" height="12" rx="3" fill="#FF8C42"/><rect x="38" y="78" width="12" height="12" rx="3" fill="#FFD166"/><rect x="22" y="93" width="12" height="10" rx="3" fill="#FFD166"/><rect x="36" y="93" width="16" height="10" rx="3" fill="#FF8C42" opacity="0.7"/><rect x="54" y="82" width="14" height="22" rx="3" fill="#fff"/><rect x="57" y="77" width="8" height="7" rx="2" fill="#FFD166"/><text x="61" y="90" text-anchor="middle" font-size="6" fill="#E8500A" font-weight="800">ID</text><rect x="2" y="78" width="14" height="10" rx="5" fill="#E8500A"/><rect x="62" y="78" width="14" height="10" rx="5" fill="#E8500A"/><rect x="18" y="12" width="42" height="58" rx="14" fill="#FFD4A0"/><rect x="24" y="7" width="30" height="11" rx="7" fill="#E8500A"/><ellipse cx="32" cy="32" rx="5.5" ry="6.5" fill="#fff"/><ellipse cx="50" cy="32" rx="5.5" ry="6.5" fill="#fff"/><ellipse cx="33" cy="34" rx="3.5" ry="4" fill="#2D2D2D"/><ellipse cx="51" cy="34" rx="3.5" ry="4" fill="#2D2D2D"/><circle cx="34.5" cy="32" r="1.2" fill="#fff"/><circle cx="52.5" cy="32" r="1.2" fill="#fff"/><ellipse cx="22" cy="46" rx="6" ry="4" fill="#FFB347" opacity="0.5"/><ellipse cx="60" cy="46" rx="6" ry="4" fill="#FFB347" opacity="0.5"/><path d="M28 52 Q40 62 54 52" stroke="#E8500A" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>';
+
+function buildScene(idx){
+  var sc=SCENES[idx-1];var el=document.getElementById('s'+idx);
+  var h='';
+  h+='<div class="deco" style="top:5%;right:0;font-size:64px;opacity:0.15">💡</div>';
+  h+='<div class="deco" style="bottom:20%;left:1%;font-size:60px;opacity:0.15">⭐</div>';
+  h+='<div class="deco" style="top:40%;left:36%;font-size:110px;opacity:0.06">🧡</div>';
+  h+='<div class="z1 tw" style="margin:0 auto 12px;"><div class="trow"><span class="tlbl">🤝 Team Trust</span><span class="tpct" id="pt'+idx+'">'+clamp(trust)+'%</span></div><div class="ttrack"><div class="tfill" id="ft'+idx+'" style="width:'+clamp(trust)+'%"></div></div></div>';
+  h+='<div class="z1" style="max-width:480px;margin:0 auto 14px;">'+buildTLStrip(idx-1)+'</div>';
+  h+='<div class="z1 scene-card" style="max-width:480px;margin:0 auto;"><div class="time-badge">'+sc.timeBadge+'</div>';
+  h+='<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:14px;">';
+  h+='<div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;"><div class="bubble '+sc.npcBubbleCls+'" style="font-size:12px;margin-bottom:12px;width:100%;"><strong style="color:'+sc.npcColor+';font-size:11px;display:block;margin-bottom:3px;">'+sc.npcName+'</strong>'+sc.npcLine+'</div><svg width="68" height="105" viewBox="0 0 80 110" xmlns="http://www.w3.org/2000/svg">'+npcSVGsmall(sc.npcType)+'</svg><span style="font-size:10px;font-weight:800;color:'+sc.npcColor+';">'+sc.npcName+'</span></div>';
+  h+='<div style="font-size:16px;font-weight:900;color:#FFD166;padding-bottom:28px;">VS</div>';
+  h+='<div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;"><svg width="68" height="130" viewBox="0 0 78 145" xmlns="http://www.w3.org/2000/svg">'+SAMILL_SMALL+'</svg><div class="bubble bubble-orange" style="font-size:11px;width:100%;margin-top:6px;">'+sc.samillLine+'</div><span style="font-size:10px;font-weight:800;color:#E8500A;">삼일이</span></div>';
+  h+='</div>';
+  h+='<div style="font-size:12px;font-weight:800;color:#E8500A;margin-bottom:8px;">삼일이는 어떻게 말할까요?</div>';
+  h+='<div id="choices-'+idx+'" style="display:flex;flex-direction:column;gap:8px;">';
+  sc.choices.forEach(function(c,i){h+='<button class="cb" onclick="pick('+idx+','+i+')">'+c+'</button>';});
+  h+='</div><div id="fb-'+idx+'" style="display:none;margin-top:12px;"></div></div>';
+  h+='<div style="font-size:10px;color:#ccc;text-align:center;margin-top:8px;position:relative;z-index:1;">Sample App · PwC Pre-boarding · Predict with Code</div>';
+  el.innerHTML=h;
+}
+
+function pick(sIdx,cIdx){
+  var sc=SCENES[sIdx-1];var fb=sc.feedbacks[cIdx];var delta=sc.deltas[cIdx];
+  trust=clamp(trust+delta);
+  choiceLog.push({time:sc.timeBadge,choice:sc.choices[cIdx],delta:delta,fbLine:fb.line,fbWho:fb.who});
+  var btns=document.querySelectorAll('#choices-'+sIdx+' .cb');
+  btns.forEach(function(b,i){b.disabled=true;if(i===cIdx)b.classList.add('chosen');});
+  var pe=document.getElementById('pt'+sIdx);var fe=document.getElementById('ft'+sIdx);
+  if(pe)pe.textContent=clamp(trust)+'%';if(fe)fe.style.width=clamp(trust)+'%';
+  var fbDiv=document.getElementById('fb-'+sIdx);
+  var isUp=delta>=0;var dTxt=delta>0?'+'+delta:delta===0?'±0':String(delta);
+  fbDiv.innerHTML='<div class="fb-card"><div class="fb-trust'+(isUp?'':' down')+'">🤝 신뢰도 '+dTxt+'</div><div class="fb-txt"><strong style="color:'+sc.npcColor+';">'+fb.who+'</strong>: "'+fb.line+'"</div></div><button class="bmain" style="margin-top:14px;" onclick="go('+(sIdx<5?sIdx+1:6)+')">'+(sIdx<5?'다음 장면으로 →':'오늘 하루 결과 보기 →')+'</button>';
+  fbDiv.style.display='block';syncTrust();
+}
+
+function toggleLog(){
+  var w=document.getElementById('log-wrap');w.style.display=w.style.display==='none'?'block':'none';
+  var ll=document.getElementById('log-list');
+  if(choiceLog.length===0){ll.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px;">아직 선택한 장면이 없어요.</div>';return;}
+  ll.innerHTML=choiceLog.map(function(c){
+    var isUp=c.delta>=0;var dTxt=c.delta>0?'+'+c.delta:c.delta===0?'±0':String(c.delta);
+    return'<div class="log-item"><div class="log-ep">'+c.time+'</div><div class="log-choice">→ '+c.choice+'</div><span class="log-trust'+(isUp?'':' dn')+'">🤝 신뢰도 '+dTxt+'</span><div style="font-size:12px;color:#555;margin-top:6px;line-height:1.6;">"'+c.fbLine+'"</div></div>';
+  }).join('');
+}
+
+function resetAll(){
+  trust=0;choiceLog=[];
+  document.getElementById('log-wrap').style.display='none';
+  go(0);
+}
+
+syncTrust();
+</script>
+
+</body>
+</html>
